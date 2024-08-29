@@ -96,10 +96,10 @@ public class Lexer implements java_cup.runtime.Scanner {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\1\2\1\3\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11\1\0\1\12";
+    "\1\10\2\11";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[12];
+    int [] result = new int[11];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -125,10 +125,10 @@ public class Lexer implements java_cup.runtime.Scanner {
 
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\12\0\24\0\12\0\12\0\12\0\12\0\12"+
-    "\0\12\0\36\0\50\0\50";
+    "\0\12\0\36\0\50";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[12];
+    int [] result = new int[11];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -153,7 +153,7 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\2"+
     "\1\11\1\12\13\0\1\3\17\0\1\13\1\0\1\12"+
-    "\11\0\1\14";
+    "\11\0\1\13";
 
   private static int [] zzUnpacktrans() {
     int [] result = new int[50];
@@ -199,10 +199,10 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\1\1\6\11\1\1\1\0\1\1";
+    "\1\0\1\11\1\1\6\11\2\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[12];
+    int [] result = new int[11];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -288,9 +288,10 @@ public class Lexer implements java_cup.runtime.Scanner {
         return new Symbol(type, new Token(lexeme, yyline + 1, yycolumn + 1));
     }
 
-    private Symbol symbol(int type, String lexeme) {
+    private Symbol symbol(int type, Object value) {
+        String lexeme = yytext();
         System.out.printf("Token tipo %d, lexeme %s, en linea %d, columna %d\n", type, lexeme == null ? "" : lexeme, yyline + 1, yycolumn + 1);
-        return new Symbol(type, new Token(lexeme, yyline + 1, yycolumn + 1));
+        return new Symbol(type, value);
     }
 
     private void error(String lexeme) {
@@ -725,7 +726,7 @@ public class Lexer implements java_cup.runtime.Scanner {
         zzAtEOF = true;
             zzDoEOF();
               {
-                return new Symbol(sym.EOF);
+                return symbol(sym.EOF);
               }
       }
       else {
@@ -734,52 +735,47 @@ public class Lexer implements java_cup.runtime.Scanner {
             { System.err.println("Error léxico: caracter desconocido: " + yytext());
             }
           // fall through
-          case 11: break;
+          case 10: break;
           case 2:
             { /* Ignorar espacios en blanco */
             }
           // fall through
-          case 12: break;
+          case 11: break;
           case 3:
-            { return new Symbol(sym.PAR_IZQ, yyline+1, yycolumn+1, yytext());
+            { return symbol(sym.PAR_IZQ);
+            }
+          // fall through
+          case 12: break;
+          case 4:
+            { return symbol(sym.PAR_DER);
             }
           // fall through
           case 13: break;
-          case 4:
-            { return new Symbol(sym.PAR_DER, yyline+1, yycolumn+1, yytext());
+          case 5:
+            { return symbol(sym.MULTIPLICACION);
             }
           // fall through
           case 14: break;
-          case 5:
-            { return new Symbol(sym.MULTIPLICACION, yyline+1, yycolumn+1, yytext());
+          case 6:
+            { return symbol(sym.SUMA);
             }
           // fall through
           case 15: break;
-          case 6:
-            { return new Symbol(sym.SUMA, yyline+1, yycolumn+1, yytext());
+          case 7:
+            { return symbol(sym.RESTA);
             }
           // fall through
           case 16: break;
-          case 7:
-            { return new Symbol(sym.RESTA, yyline+1, yycolumn+1, yytext());
+          case 8:
+            { return symbol(sym.DIVISION);
             }
           // fall through
           case 17: break;
-          case 8:
-            { return new Symbol(sym.DIVISION, yyline+1, yycolumn+1, yytext());
+          case 9:
+            { return symbol(sym.NUMERO, Double.parseDouble(yytext()));
             }
           // fall through
           case 18: break;
-          case 9:
-            { return new Symbol(sym.NUMERO, Integer.parseInt(yytext()));
-            }
-          // fall through
-          case 19: break;
-          case 10:
-            { return new Symbol(sym.NUMERO, Double.parseDouble(yytext()));
-            }
-          // fall through
-          case 20: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

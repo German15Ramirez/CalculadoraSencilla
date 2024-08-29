@@ -24,9 +24,10 @@ import static com.example.calculadorasencilla.analizadores.sym.*;
         return new Symbol(type, new Token(lexeme, yyline + 1, yycolumn + 1));
     }
 
-    private Symbol symbol(int type, String lexeme) {
+    private Symbol symbol(int type, Object value) {
+        String lexeme = yytext();
         System.out.printf("Token tipo %d, lexeme %s, en linea %d, columna %d\n", type, lexeme == null ? "" : lexeme, yyline + 1, yycolumn + 1);
-        return new Symbol(type, new Token(lexeme, yyline + 1, yycolumn + 1));
+        return new Symbol(type, value);
     }
 
     private void error(String lexeme) {
@@ -46,17 +47,16 @@ import static com.example.calculadorasencilla.analizadores.sym.*;
 
 %%
 
-"+"               { return new Symbol(sym.SUMA, yyline+1, yycolumn+1, yytext()); }
-"-"               { return new Symbol(sym.RESTA, yyline+1, yycolumn+1, yytext()); }
-"*"               { return new Symbol(sym.MULTIPLICACION, yyline+1, yycolumn+1, yytext()); }
-"/"               { return new Symbol(sym.DIVISION, yyline+1, yycolumn+1, yytext()); }
-"("               { return new Symbol(sym.PAR_IZQ, yyline+1, yycolumn+1, yytext()); }
-")"               { return new Symbol(sym.PAR_DER, yyline+1, yycolumn+1, yytext()); }
+"+"               { return symbol(sym.SUMA); }
+"-"               { return symbol(sym.RESTA); }
+"*"               { return symbol(sym.MULTIPLICACION); }
+"/"               { return symbol(sym.DIVISION); }
+"("               { return symbol(sym.PAR_IZQ); }
+")"               { return symbol(sym.PAR_DER); }
 
-[0-9]+\.[0-9]+    { return new Symbol(sym.NUMERO, Double.parseDouble(yytext())); }
-[0-9]+            { return new Symbol(sym.NUMERO, Integer.parseInt(yytext())); }
+[0-9]+(\.[0-9]*)? { return symbol(sym.NUMERO, Double.parseDouble(yytext())); }
 
 [ \t\n\r\f]+      { /* Ignorar espacios en blanco */ }
-<<EOF>>           { return new Symbol(sym.EOF); }
+<<EOF>>           { return symbol(sym.EOF); }
 
 [^]                  { System.err.println("Error léxico: caracter desconocido: " + yytext()); }

@@ -129,43 +129,50 @@ class CUP$Parser$actions {
 
 
     private List<String> errorsList = new LinkedList<>();
-    private List<Double> resultados = new LinkedList<>();
 
     public List<String> getErrorsList() {
         return errorsList;
     }
 
-    public List<Double> getListaResultados() {
-        return resultados;
-    }
-
     private void report_error(String message, Object err) {
-        System.out.println(message + ": " + err.toString());
-        errorsList.add(message + ": " + err.toString());
+        String errorMessage = (err != null) ? err.toString() : "Error desconocido";
+        System.out.println(message + ": " + errorMessage);
+        errorsList.add(message + ": " + errorMessage);
     }
 
     public double performOperation(double leftOperand, String operator, double rightOperand) {
+        double result = 0;
         switch (operator) {
             case "+":
-                return leftOperand + rightOperand;
+                result = leftOperand + rightOperand;
+                break;
             case "-":
-                return leftOperand - rightOperand;
+                result = leftOperand - rightOperand;
+                break;
             case "*":
-                return leftOperand * rightOperand;
+                result = leftOperand * rightOperand;
+                break;
             case "/":
                 if (rightOperand == 0) {
                     System.out.println("Error: División por cero.");
                     return 0;
                 }
-                return leftOperand / rightOperand;
+                result = leftOperand / rightOperand;
+                break;
             default:
                 System.out.println("Operador no reconocido: " + operator);
                 return 0;
         }
+        System.out.println("Operación: " + leftOperand + " " + operator + " " + rightOperand + " = " + result);
+        return result;
     }
 
-    private void addResult(Double result) {
-        resultados.add(result);
+    public void printResult(Double result) {
+        if (result == null) {
+            System.out.println("Intento de agregar un resultado nulo");
+        } else {
+            System.out.println("Resultado: " + result);
+        }
     }
 
 
@@ -218,7 +225,8 @@ class CUP$Parser$actions {
                 Double left = (Double)e1;
                 Double right = (Double)e2;
                 double result = performOperation(left, "+", right);
-                addResult(result);
+                printResult(result);
+                RESULT = result;
             
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -238,7 +246,8 @@ class CUP$Parser$actions {
                 Double left = (Double)e1;
                 Double right = (Double)e2;
                 double result = performOperation(left, "-", right);
-                addResult(result);
+                printResult(result);
+                RESULT = result;
             
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -258,7 +267,8 @@ class CUP$Parser$actions {
                 Double left = (Double)e1;
                 Double right = (Double)e2;
                 double result = performOperation(left, "*", right);
-                addResult(result);
+                printResult(result);
+                RESULT = result;
             
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -278,7 +288,8 @@ class CUP$Parser$actions {
                 Double left = (Double)e1;
                 Double right = (Double)e2;
                 double result = performOperation(left, "/", right);
-                addResult(result);
+                printResult(result);
+                RESULT = result;
             
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -291,7 +302,10 @@ class CUP$Parser$actions {
 		int errleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int errright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object err = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 report_error("Error en el comando", err); 
+		
+                report_error("Error en el comando", err);
+                RESULT = null;
+            
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -300,7 +314,10 @@ class CUP$Parser$actions {
           case 6: // programa ::= 
             {
               Object RESULT =null;
-		 /* Fin del programa */ 
+		
+                /* Fin del programa */
+                RESULT = null;
+            
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("programa",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

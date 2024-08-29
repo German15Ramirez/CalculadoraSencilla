@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     // https://mvnrepository.com/artifact/com.github.vbmacher/java-cup-runtime
     implementation("com.github.vbmacher:java-cup-runtime:11b-20160615-3")
