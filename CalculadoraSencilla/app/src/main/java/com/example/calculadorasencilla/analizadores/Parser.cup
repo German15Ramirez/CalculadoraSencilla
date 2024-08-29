@@ -1,0 +1,94 @@
+package com.example.calculadorasencilla.analizadores;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.LinkedList;
+import java_cup.runtime.*;
+
+action code {:
+
+    private List<String> errorsList = new LinkedList<>();
+    private List<Double> resultados = new LinkedList<>();
+
+    public List<String> getErrorsList() {
+        return errorsList;
+    }
+
+    public List<Double> getListaResultados() {
+        return resultados;
+    }
+
+    private void report_error(String message, Object err) {
+        System.out.println(message + ": " + err.toString());
+        errorsList.add(message + ": " + err.toString());
+    }
+
+    public double performOperation(double leftOperand, String operator, double rightOperand) {
+        switch (operator) {
+            case "+":
+                return leftOperand + rightOperand;
+            case "-":
+                return leftOperand - rightOperand;
+            case "*":
+                return leftOperand * rightOperand;
+            case "/":
+                if (rightOperand == 0) {
+                    System.out.println("Error: División por cero.");
+                    return 0;
+                }
+                return leftOperand / rightOperand;
+            default:
+                System.out.println("Operador no reconocido: " + operator);
+                return 0;
+        }
+    }
+
+    private void addResult(Double result) {
+        resultados.add(result);
+    }
+
+:}
+
+terminal SUMA, RESTA, MULTIPLICACION, DIVISION, PAR_IZQ, PAR_DER;
+terminal Double NUMERO;
+
+non terminal programa, expresion, errorSintactico;
+
+precedence left SUMA, RESTA;
+precedence left MULTIPLICACION, DIVISION;
+
+start with programa;
+
+programa ::= expresion:e1 SUMA expresion:e2 {:
+                Double left = (Double)e1;
+                Double right = (Double)e2;
+                double result = performOperation(left, "+", right);
+                addResult(result);
+            :}
+           | expresion:e1 RESTA expresion:e2 {:
+                Double left = (Double)e1;
+                Double right = (Double)e2;
+                double result = performOperation(left, "-", right);
+                addResult(result);
+            :}
+           | expresion:e1 MULTIPLICACION expresion:e2 {:
+                Double left = (Double)e1;
+                Double right = (Double)e2;
+                double result = performOperation(left, "*", right);
+                addResult(result);
+            :}
+           | expresion:e1 DIVISION expresion:e2 {:
+                Double left = (Double)e1;
+                Double right = (Double)e2;
+                double result = performOperation(left, "/", right);
+                addResult(result);
+            :}
+           | error:err {: report_error("Error en el comando", err); :}
+           | /*EOF*/ {: /* Fin del programa */ :};
+
+expresion ::= NUMERO:n {: RESULT = n.doubleValue(); :}
+           | PAR_IZQ expresion:e PAR_DER {: RESULT = e; :}
+           | expresion:e1 SUMA expresion:e2 {: RESULT = performOperation((Double)e1, "+", (Double)e2); :}
+           | expresion:e1 RESTA expresion:e2 {: RESULT = performOperation((Double)e1, "-", (Double)e2); :}
+           | expresion:e1 MULTIPLICACION expresion:e2 {: RESULT = performOperation((Double)e1, "*", (Double)e2); :}
+           | expresion:e1 DIVISION expresion:e2 {: RESULT = performOperation((Double)e1, "/", (Double)e2); :};

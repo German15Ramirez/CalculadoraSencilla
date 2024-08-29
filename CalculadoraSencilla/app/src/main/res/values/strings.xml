@@ -1,3 +1,16 @@
 <resources>
+    <!-- Nombre de la aplicación -->
     <string name="app_name">CalculadoraSencilla</string>
+
+    <!-- Título de la aplicación -->
+    <string name="app_title">Calculadora</string>
+
+    <!-- Texto del hint en el campo de entrada -->
+    <string name="input_hint">Ingrese la operación</string>
+
+    <!-- Texto del botón para calcular -->
+    <string name="calculate_button">Calcular</string>
+
+    <!-- Texto del hint en el campo de resultado -->
+    <string name="result_hint">Resultado</string>
 </resources>
