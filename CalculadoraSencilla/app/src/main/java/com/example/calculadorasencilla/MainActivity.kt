@@ -1,22 +1,20 @@
 package com.example.calculadorasencilla
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.calculadorasencilla.analizadores.Lexer
 import com.example.calculadorasencilla.analizadores.*;
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.output.ByteArrayOutputStream
-import java.io.PrintStream
-import java.io.StringReader
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var inputField: EditText
     private lateinit var calculateButton: MaterialButton
+    private lateinit var erroresButton: MaterialButton
+    private var parserWrapper: ParserWrapper? = null
+    private var canOpenErroresActivity = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,37 +22,67 @@ class MainActivity : AppCompatActivity() {
 
         inputField = findViewById(R.id.inputField)
         calculateButton = findViewById(R.id.calculateButton)
+        erroresButton = findViewById(R.id.showErrorsButton)
 
         calculateButton.setOnClickListener {
             val expression = inputField.text.toString()
-            try {
-                val parserWrapper = ParserWrapper(expression)
-                val success = parserWrapper.parse()
+            if (expression.isBlank()) {
+                Toast.makeText(this, "Por favor, ingrese una operación", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-                if (success) {
-                    val result = parserWrapper.result
+            try {
+                parserWrapper = ParserWrapper(expression)
+                val success = parserWrapper!!.parse()
+
+                if (parserWrapper!!.errors.isNotEmpty()) {
+                    canOpenErroresActivity = true
+                } else {
+                    canOpenErroresActivity = true
+                }
+
+                if (parserWrapper!!.errors.isNotEmpty()) {
+                    openErroresActivity()
+                } else if (success) {
+                    val result = parserWrapper!!.result
                     if (result != null) {
-                        showResultDialog("La respuesta es: $result")
+                        openResultadoActivity(result.toString())
                     } else {
-                        showResultDialog("No se obtuvo resultado")
+                        openResultadoActivity("No se obtuvo resultado")
                     }
                 } else {
-                    showResultDialog("Error al analizar la expresión")
+                    openResultadoActivity("Error al analizar la expresión")
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                showResultDialog("Error en la expresión")
+                openResultadoActivity("Error en la expresión")
                 Log.e("ParserError", "Se produjo una excepción: ${e.message}")
+            }
+        }
+
+        erroresButton.setOnClickListener {
+            if (canOpenErroresActivity) {
+                openErroresActivity()
+            } else {
+                Toast.makeText(this, "No hay errores para mostrar", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun showResultDialog(result: String) {
-        AlertDialog.Builder(this)
-            .setTitle("Resultado")
-            .setMessage(result)
-            .setPositiveButton("OK", null)
-            .show()
+    private fun openErroresActivity() {
+        if (!canOpenErroresActivity) {
+            Toast.makeText(this, "No hay errores para mostrar", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val intent = Intent(this, ErroresActivity::class.java)
+        intent.putStringArrayListExtra("errors", ArrayList(parserWrapper!!.errors))
+        startActivity(intent)
+    }
+
+    private fun openResultadoActivity(result: String) {
+        val intent = Intent(this, ResultadoActivity::class.java)
+        intent.putExtra("resultado", "La Respuesta de Esta Operación Matemática es:\n\n$result")
+        startActivity(intent)
     }
 }

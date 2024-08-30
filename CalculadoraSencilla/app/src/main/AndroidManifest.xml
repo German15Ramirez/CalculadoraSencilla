@@ -13,6 +13,12 @@
         android:theme="@style/Theme.CalculadoraSencilla"
         tools:targetApi="31">
         <activity
+            android:name=".ResultadoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ErroresActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

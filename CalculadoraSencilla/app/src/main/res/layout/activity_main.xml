@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:text="@string/app_title"
         android:textSize="24sp"
-        android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -53,6 +52,17 @@
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp" />
 
-
+    <!-- Botón para mostrar errores -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/showErrorsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Errores"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/calculateButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
